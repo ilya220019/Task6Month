@@ -16,6 +16,7 @@ class FirstAdapter(
     fun addData(list: List<Model>) {
         this.list.clear()
         this.list.addAll(list)
+        notifyDataSetChanged()
     }
 
     inner class ViewHolder(private val binding: ItemBinding) :
