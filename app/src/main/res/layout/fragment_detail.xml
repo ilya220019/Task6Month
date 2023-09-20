@@ -3,22 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="@dimen/need"
     android:orientation="vertical"
-    android:layout_margin="24dp"
     tools:context=".ui.second.DetailFragment">
 
     <EditText
         android:id="@+id/et_title"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="@dimen/standard"
         android:autofillHints=""
-        android:hint="@string/task"
-      />
+        android:hint="@string/task" />
+
     <Button
         android:id="@+id/btn_save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/save"
-        />
+        android:text="@string/save" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

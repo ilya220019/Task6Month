@@ -11,9 +11,10 @@
         android:id="@+id/cb_adapter"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textSize="48dp"
+        android:clickable="false"
+        android:textSize="@dimen/standard"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Задача"
-        android:clickable="false"/>
+        tools:ignore="SpUsage"
+        tools:text="@string/taskItem" />
 </androidx.constraintlayout.widget.ConstraintLayout>

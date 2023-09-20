@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="activity">55dp</dimen>
+    <dimen name="standard">48dp</dimen>
+    <dimen name="need">24dp</dimen>
+    <dimen name="margin">16dp</dimen>
+</resources>
