@@ -4,4 +4,6 @@
     <dimen name="standard">48dp</dimen>
     <dimen name="need">24dp</dimen>
     <dimen name="margin">16dp</dimen>
+    <dimen name="activity_main">0dp</dimen>
+
 </resources>

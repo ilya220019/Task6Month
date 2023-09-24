@@ -6,4 +6,13 @@
     <string name="save">Сохранить</string>
     <string name="taskItem">Задача</string>
     <string name="todo">TODO</string>
+    <string name="active">Active</string>
+    <string name="no_active">No active</string>
+    <string name="update">Update</string>
+    <string name="no">no</string>
+    <string name="yes">yes</string>
+    <string name="all">All</string>
+    <string name="delete">Удалить</string>
+    <string name="delete_un">Точно хотите удалить</string>
+    <string name="check">Check</string>
 </resources>

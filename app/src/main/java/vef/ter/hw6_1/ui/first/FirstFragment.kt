@@ -1,78 +1,125 @@
 package vef.ter.hw6_1.ui.first
 
 import android.app.AlertDialog
-import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.core.os.bundleOf
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import vef.ter.hw6_1.R
+import vef.ter.hw6_1.base.BaseFragment
 import vef.ter.hw6_1.databinding.FragmentFirstBinding
+import vef.ter.hw6_1.utils.Const.KEY_ADD_MAIN
+import vef.ter.hw6_1.utils.Const.KEY_ADD_NEW_TASK
+import vef.ter.hw6_1.utils.Const.KEY_MAIN_ADD
+import vef.ter.hw6_1.utils.Const.KEY_TASK_SET
+import vef.ter.hw6_1.utils.Const.KEY_UPDATE_TASK
+import vef.ter.hw6_1.utils.ToScreen
 
 
-class FirstFragment : Fragment() {
-    private lateinit var binding: FragmentFirstBinding
-    private lateinit var firstViewModel: FirstViewModel
+class FirstFragment : BaseFragment<FragmentFirstBinding, FirstViewModel>() {
+    private val adapter = FirstAdapter(
+        this::onClickItem, this::onNoClickItem, this::updateTask, this::showAlertDialog
+    )
+    override val viewModel: FirstViewModel
+        get() = ViewModelProvider(this)[FirstViewModel::class.java]
 
-    private var adapter =
-        FirstAdapter(this::onClickItem, this::onNoClickItem, this::showAlertDialog)
+    override fun inflaterViewBinding(
+        inflater: LayoutInflater, container: ViewGroup?
+    ) = FragmentFirstBinding.inflate(inflater, container, false)
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentFirstBinding.inflate(layoutInflater, container, false)
-        return binding.root
+    override fun initMenu() {
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.show_all -> {
+                        viewModel.sortList(ToScreen.ALL)
+                        return true
+                    }
+
+                    R.id.show_active -> {
+                        viewModel.sortList(ToScreen.ACTIVE)
+                        return true
+                    }
+
+                    R.id.show_not_active -> {
+                        viewModel.sortList(ToScreen.NOT_ACTIVE)
+                        return true
+                    }
+
+                    else -> false
+                }
+            }
+
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initBegin()
-        initRV()
-        init()
-    }
-
-    private fun initBegin() {
-        firstViewModel = ViewModelProvider(this)[FirstViewModel::class.java]
-        setFragmentResultListener("title") { _, bundle ->
-            bundle.getString("key1")?.let { firstViewModel.addTask(it) }
+    override fun initStart() {
+        setFragmentResultListener(KEY_ADD_MAIN) { _, bundle ->
+            bundle.getString(KEY_ADD_NEW_TASK)?.let { viewModel.addTask(it) }
+            bundle.getSerializable(KEY_UPDATE_TASK)
+                ?.let { viewModel.updateTask(it as vef.ter.hw6_1.model.Model) }
         }
     }
 
-    private fun initRV() = with(binding) {
-
-        firstViewModel.liveData.observe(viewLifecycleOwner) { list ->
-            adapter.addData(list)
-            rv.adapter = adapter
-        }
-    }
-
-    private fun init() = with(binding) {
-        fab.setOnClickListener {
+    override fun initListener() {
+        binding.fab.setOnClickListener {
             findNavController().navigate(R.id.detailFragment)
         }
     }
 
-    private fun onClickItem(position: Int) {
-        firstViewModel.setActive(position)
-
+    override fun initRecyclerView() {
+        viewModel.liveData.observe(viewLifecycleOwner) { list ->
+            adapter.addData(list)
+            binding.rv.adapter = adapter
+        }
     }
 
-    private fun onNoClickItem(position: Int) {
-        firstViewModel.setNoActive(position)
-
+    private fun onClickItem(task: vef.ter.hw6_1.model.Model) {
+        viewModel.setActive(task)
     }
 
-    private fun showAlertDialog(position: Int) {
+    private fun onNoClickItem(task: vef.ter.hw6_1.model.Model) {
+        viewModel.setNoActive(task)
+    }
+
+    private fun updateTask(task: vef.ter.hw6_1.model.Model) {
+        setFragmentResult(
+            KEY_MAIN_ADD,
+            bundleOf(KEY_TASK_SET to task)
+        )
+        findNavController().navigate(R.id.detailFragment)
+    }
+
+    private fun showAlertDialog(task: vef.ter.hw6_1.model.Model) {
         val alertDialog = AlertDialog.Builder(requireContext())
-        alertDialog.setTitle("Удалить")
-            .setMessage("вы точно хотите удалить").setCancelable(true)
-            .setPositiveButton("Да") { _, _ ->
-                firstViewModel.deleteTask(position)
-            }.setNegativeButton("Нет") { _, _ -> }.show()
+        alertDialog.setTitle(getString(R.string.delete)).setMessage(getString(R.string.delete_un))
+            .setCancelable(true).setPositiveButton(getString(R.string.yes)) { _, _ ->
+                viewModel.deleteTask(task)
+            }.setNegativeButton(getString(R.string.no)) { _, _ -> }.show()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
+    override val firstViewModel: FirstViewModel
+        get() = TODO("Not yet implemented")
+
 }
 

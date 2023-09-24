@@ -17,4 +17,12 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="SpUsage"
         tools:text="@string/taskItem" />
+
+    <ImageView
+        android:id="@+id/img"
+        android:layout_width="@dimen/standard"
+        android:layout_height="@dimen/standard"
+        android:src="@drawable/ic_edit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

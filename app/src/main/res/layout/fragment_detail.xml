@@ -14,6 +14,14 @@
         android:autofillHints=""
         android:hint="@string/task" />
 
+    <CheckBox
+        android:id="@+id/cb_state"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard"
+        android:textSize="@dimen/standard"
+        android:visibility="gone" />
+
     <Button
         android:id="@+id/btn_save"
         android:layout_width="match_parent"
